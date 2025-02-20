@@ -32,7 +32,7 @@ if __name__ == "__main__":
     for file, content in file_data.items():
         # print(f"File: {file}\nContent: {content}\n")
         is_not_pe = search_strings(content, ["not a PE binary"])
-        is_skip = search_strings(file, ["Skip "])
+        is_skip = search_strings(file, ["Skip "]) or search_strings(file, ["Lỗi "]) or search_strings(file, ["Không thể "])
         if not is_not_pe and not is_skip:
            total += 1
            is_safe = search_strings(content, ["An toàn"])
@@ -42,3 +42,4 @@ if __name__ == "__main__":
            total_false += not is_safe
     
     print(total, total_true, total_false)
+    
