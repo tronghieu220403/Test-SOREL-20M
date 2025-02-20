@@ -31,10 +31,12 @@ def predict_malware(file_path, model):
     features = extract_features(file_path)
     if features is None:
         return "Không thể trích xuất đặc trưng"
-    
-    prediction = model.predict(features)[0]
-    print(f"Xác suất: {prediction}")
-    return "Mã độc" if prediction > 0.5 else "An toàn"
+    try:
+        prediction = model.predict(features)[0]
+        print(f"Xác suất: {prediction}")
+        return "Mã độc" if prediction > 0.5 else "An toàn"
+    except Exception as e:
+        return f"Không thể tính xác suất: {e}"
 
 def process_files_in_directory(dir_path, model):
     for root, _, files in os.walk(dir_path):
