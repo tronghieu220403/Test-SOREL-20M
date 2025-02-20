@@ -1,4 +1,14 @@
 import re
+import os
+
+import hashlib
+
+def sha256_of_file(filepath):
+    sha256_hash = hashlib.sha256()
+    with open(filepath, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            sha256_hash.update(chunk)
+    return sha256_hash.hexdigest()
 
 def read_and_parse_file(filename):
     with open(filename, 'r', encoding='utf-8') as f:
@@ -25,8 +35,8 @@ if __name__ == "__main__":
     file_data = read_and_parse_file("output.txt")
     
     total = 0
-    total_true = 0
-    total_false = 0
+    total_clean = 0
+    total_mal = 0
 
     # Kiểm tra nội dung đọc được
     for file, content in file_data.items():
@@ -36,10 +46,10 @@ if __name__ == "__main__":
         if not is_not_pe and not is_skip:
            total += 1
            is_safe = search_strings(content, ["An toàn"])
-           if not is_safe:
-               print(file)
-           total_true += is_safe
-           total_false += not is_safe
+           #if is_safe:
+               #print(file)
+               #print(sha256_of_file(file))
+           total_clean += is_safe
+           total_mal += not is_safe
     
-    print(total, total_true, total_false)
-    
+    print(f'Total {total}, clean {total_clean}, malware {total_mal}')

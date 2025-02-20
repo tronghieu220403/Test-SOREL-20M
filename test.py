@@ -42,19 +42,22 @@ def process_files_in_directory(dir_path, model):
     for root, _, files in os.walk(dir_path):
         for file in files:
             if file.lower().endswith(('.dll', '.exe')):  # Chỉ xử lý file .dll và .exe
-                file_path = os.path.join(root, file)
-                file_size = os.path.getsize(file_path)
-                if file_size > 30 * (2 ** 20):
-                    print(f"Skip {file_path}, size {file_size}")
-                else:
-                    print(f"Đang xử lý: {file_path}")
-                    result = predict_malware(file_path, model)
-                    print(f"Kết quả model: {result}")
+                try:
+                    file_path = os.path.join(root, file)
+                    file_size = os.path.getsize(file_path)
+                    if file_size > 30 * (2 ** 20):
+                        print(f"Skip {file_path}, size {file_size}")
+                    else:
+                        print(f"Đang xử lý: {file_path}")
+                        result = predict_malware(file_path, model)
+                        print(f"Kết quả model: {result}")
+                except Exception as e:
+                    print(f"Skip {file_path}: {e}")
                 print(flush=True)
 
 if __name__ == "__main__":
     
-    dir_path = "C:\\"
+    dir_path = "C:\\Users\\vcs_admin\\Downloads\\File sạch\\File sạch\\"
     model_path = "lightgbm.model"
     
     if not os.path.exists(dir_path) or not os.path.exists(model_path):
@@ -65,5 +68,6 @@ if __name__ == "__main__":
     if model is None:
         print("Không thể tải mô hình")
         sys.exit(0)
+    
     sys.stdout = open("output.txt", "w", encoding="utf-8")
     process_files_in_directory(dir_path, model)
