@@ -4,7 +4,6 @@ import numpy as np
 import sys
 import os
 
-
 def extract_features(binary_path):
     """Trích xuất đặc trưng từ file PE bằng Ember"""
     print(f"Trích xuất đặc trưng từ file: {binary_path}")
@@ -27,28 +26,42 @@ def load_model(model_path):
         print(f"Lỗi khi tải mô hình: {e}")
         return None
 
-def predict_malware(file_path, model_path):
+def predict_malware(file_path, model):
     """Phân loại file PE là malware hay không"""
     features = extract_features(file_path)
     if features is None:
         return "Không thể trích xuất đặc trưng"
     
-    model = load_model(model_path)
-    if model is None:
-        return "Không thể tải mô hình"
-    
     prediction = model.predict(features)[0]
     print(f"Xác suất: {prediction}")
     return "Mã độc" if prediction > 0.5 else "An toàn"
 
+def process_files_in_directory(dir_path, model):
+    for root, _, files in os.walk(dir_path):
+        for file in files:
+            if file.lower().endswith(('.dll', '.exe')):  # Chỉ xử lý file .dll và .exe
+                file_path = os.path.join(root, file)
+                file_size = os.path.getsize(file_path)
+                if file_size > 30 * (2 ** 20):
+                    print(f"Skip {file_path}, size {file_size}")
+                else:
+                    print(f"Đang xử lý: {file_path}")
+                    result = predict_malware(file_path, model)
+                    print(f"Kết quả model: {result}")
+                print(flush=True)
+
 if __name__ == "__main__":
     
-    file_path = "a4c0c02069ca253e4324d584c7bbebb3e732d7db9d19fd8fa350d6d537fcd3fe.exe.bin"
+    dir_path = "C:\\"
     model_path = "lightgbm.model"
     
-    if not os.path.exists(file_path) or not os.path.exists(model_path):
-        print("File hoặc model không tồn tại!")
+    if not os.path.exists(dir_path) or not os.path.exists(model_path):
+        print("Folder hoặc model không tồn tại!")
         sys.exit(1)
     
-    result = predict_malware(file_path, model_path)
-    print(f"Kết quả model: {result}")
+    model = load_model(model_path)
+    if model is None:
+        print("Không thể tải mô hình")
+        sys.exit(0)
+    sys.stdout = open("output.txt", "w", encoding="utf-8")
+    process_files_in_directory(dir_path, model)
