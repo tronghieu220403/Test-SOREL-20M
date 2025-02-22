@@ -41,7 +41,7 @@ def predict_malware(file_path, model):
 def process_files_in_directory(dir_path, model):
     for root, _, files in os.walk(dir_path):
         for file in files:
-            if file.lower().endswith(('.dll', '.exe')):  # Chỉ xử lý file .dll và .exe
+            #if file.lower().endswith(('.dll', '.exe')):  # Chỉ xử lý file .dll và .exe
                 try:
                     file_path = os.path.join(root, file)
                     file_size = os.path.getsize(file_path)
@@ -57,11 +57,10 @@ def process_files_in_directory(dir_path, model):
 
 if __name__ == "__main__":
     
-    dir_path = "C:\\Users\\vcs_admin\\Downloads\\File sạch\\File sạch\\"
     model_path = "lightgbm.model"
     
-    if not os.path.exists(dir_path) or not os.path.exists(model_path):
-        print("Folder hoặc model không tồn tại!")
+    if not os.path.exists(model_path):
+        print("Model không tồn tại!")
         sys.exit(1)
     
     model = load_model(model_path)
@@ -70,4 +69,5 @@ if __name__ == "__main__":
         sys.exit(0)
     
     sys.stdout = open("output.txt", "w", encoding="utf-8")
-    process_files_in_directory(dir_path, model)
+    process_files_in_directory("E:\\dataset\\MalDict\\maldict_disarmed_behavior_test\\f", model)
+
