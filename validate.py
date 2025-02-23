@@ -39,7 +39,7 @@ def list_files(path):
 
 # Ví dụ sử dụng
 if __name__ == "__main__":
-    output_dir = "E:\\Code\\Github\\Test-SOREL-20M\\output\\maldict\\train\\"
+    output_dir = "E:\\Code\\Github\\Test-SOREL-20M\\"
 
     total = 0
     total_not_pe = 0

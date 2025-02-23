@@ -55,7 +55,7 @@ def process_files_in_directory(dir_path, model):
     file_list = []
     for root, _, files in os.walk(dir_path):
         for file in files:
-            if file.lower().endswith(('.sys')):  # Chỉ xử lý file .dll, .exe, .sys
+            #if file.lower().endswith(('.sys')):  # Chỉ xử lý file .dll, .exe, .sys
                 file_path = os.path.join(root, file)
                 file_list.append(file_path)
 
@@ -78,4 +78,4 @@ if __name__ == "__main__":
     sys.stdout = open("output.txt", "w", encoding="utf-8")
     
     #process_file("test_files\\acpiex.sys", model)
-    process_files_in_directory("C:\\", model)
+    process_files_in_directory("E:\\Code\\Github\\Test-SOREL-20M\\test_files\\malware-samples-main\\", model)
