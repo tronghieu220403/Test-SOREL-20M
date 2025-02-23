@@ -41,7 +41,7 @@ def predict_malware(file_path, model):
 def process_file(file_path, model):
     try:
         file_size = os.path.getsize(file_path)
-        if file_size > 32 * (2 ** 20):
+        if file_size > 10 * (2 ** 20):
             print(f"Skip {file_path}, size {file_size}")
         else:
             print(f"Đang xử lý: {file_path}")
@@ -55,7 +55,7 @@ def process_files_in_directory(dir_path, model):
     file_list = []
     for root, _, files in os.walk(dir_path):
         for file in files:
-            if file.lower().endswith(('.dll', '.exe')):  # Chỉ xử lý file .dll và .exe
+            if file.lower().endswith(('.sys')):  # Chỉ xử lý file .dll, .exe, .sys
                 file_path = os.path.join(root, file)
                 file_list.append(file_path)
 
@@ -77,5 +77,5 @@ if __name__ == "__main__":
     
     sys.stdout = open("output.txt", "w", encoding="utf-8")
     
-    file_path = "C:\\"
-    process_files_in_directory(file_path, model)
+    #process_file("test_files\\acpiex.sys", model)
+    process_files_in_directory("C:\\", model)

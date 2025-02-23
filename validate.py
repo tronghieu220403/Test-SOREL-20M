@@ -21,7 +21,7 @@ def read_and_parse_file(filename):
         lines = section.strip().split('\n')
         if lines:
             file_name = lines[0].replace("Đang xử lý: ", "").strip()
-            file_name = lines[0].replace("Skip: ", "").strip()
+            file_name = file_name.replace("Skip: ", "").strip()
             file_name = re.sub(r', size .*$', '', file_name)
             data = " ".join(lines[1:]).strip()  # Gộp các dòng còn lại thành 1 string
             parsed_data[file_name] = data
@@ -39,7 +39,7 @@ def list_files(path):
 
 # Ví dụ sử dụng
 if __name__ == "__main__":
-    output_dir = "E:\\Code\\Github\\Test-SOREL-20M\\output\\maldict\\test\\"
+    output_dir = "E:\\Code\\Github\\Test-SOREL-20M\\output\\maldict\\train\\"
 
     total = 0
     total_not_pe = 0
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     total_eval_mal = 0
 
     for file_name in list_files(Path(output_dir)):
-        if "output_" not in file_name:
+        if "output" not in file_name:
             continue
 
         file_data = read_and_parse_file(output_dir + file_name)
@@ -62,6 +62,8 @@ if __name__ == "__main__":
             total += 1
             total_not_pe += is_not_pe
             total_skip += is_skip
+            if is_not_pe or is_skip:
+                continue
             if not is_not_pe and not is_skip:
                 total_eval += 1
             is_safe = search_strings(content, ["An toàn"])
