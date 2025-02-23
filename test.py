@@ -4,6 +4,17 @@ import numpy as np
 import sys
 import os
 
+def load_model(model_path):
+    """Tải mô hình LightGBM đã huấn luyện"""
+    try:
+        #sys.stdout = None
+        model = lgb.Booster(model_file=model_path)
+        #sys.stdout = sys.__stdout__
+        return model
+    except Exception as e:
+        print(f"Lỗi khi tải mô hình: {e}")
+        return None
+
 def extract_features(binary_path):
     """Trích xuất đặc trưng từ file PE bằng Ember"""
     print(f"Trích xuất đặc trưng từ file: {binary_path}")
@@ -13,17 +24,6 @@ def extract_features(binary_path):
         return np.array(extractor.feature_vector(file_data), dtype=np.float32).reshape(1, -1)
     except Exception as e:
         print(f"Lỗi khi trích xuất đặc trưng: {e}")
-        return None
-
-def load_model(model_path):
-    """Tải mô hình LightGBM đã huấn luyện"""
-    try:
-        sys.stdout = None
-        model = lgb.Booster(model_file=model_path)
-        sys.stdout = sys.__stdout__
-        return model
-    except Exception as e:
-        print(f"Lỗi khi tải mô hình: {e}")
         return None
 
 def predict_malware(file_path, model):
@@ -38,22 +38,29 @@ def predict_malware(file_path, model):
     except Exception as e:
         return f"Không thể tính xác suất: {e}"
 
+def process_file(file_path, model):
+    try:
+        file_size = os.path.getsize(file_path)
+        if file_size > 32 * (2 ** 20):
+            print(f"Skip {file_path}, size {file_size}")
+        else:
+            print(f"Đang xử lý: {file_path}")
+            result = predict_malware(file_path, model)
+            print(f"Kết quả model: {result}")
+    except Exception as e:
+        print(f"Skip {file_path}: {e}")
+    print(flush=True)
+
 def process_files_in_directory(dir_path, model):
+    file_list = []
     for root, _, files in os.walk(dir_path):
         for file in files:
-            #if file.lower().endswith(('.dll', '.exe')):  # Chỉ xử lý file .dll và .exe
-                try:
-                    file_path = os.path.join(root, file)
-                    file_size = os.path.getsize(file_path)
-                    if file_size > 30 * (2 ** 20):
-                        print(f"Skip {file_path}, size {file_size}")
-                    else:
-                        print(f"Đang xử lý: {file_path}")
-                        result = predict_malware(file_path, model)
-                        print(f"Kết quả model: {result}")
-                except Exception as e:
-                    print(f"Skip {file_path}: {e}")
-                print(flush=True)
+            if file.lower().endswith(('.dll', '.exe')):  # Chỉ xử lý file .dll và .exe
+                file_path = os.path.join(root, file)
+                file_list.append(file_path)
+
+    for file_path in file_list:
+        process_file(file_path, model)
 
 if __name__ == "__main__":
     
@@ -69,5 +76,6 @@ if __name__ == "__main__":
         sys.exit(0)
     
     sys.stdout = open("output.txt", "w", encoding="utf-8")
-    process_files_in_directory("E:\\dataset\\MalDict\\maldict_disarmed_behavior_test\\f", model)
-
+    
+    file_path = "C:\\"
+    process_files_in_directory(file_path, model)
