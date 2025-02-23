@@ -546,6 +546,11 @@ class PEFeatureExtractor(object):
 
         features = {"sha256": hashlib.sha256(bytez).hexdigest()}
         features.update({fe.name: fe.raw_features(bytez, lief_binary) for fe in self.features})
+
+        for fe in self.features:
+            print(f"{fe.name}: {fe.dim} features")
+        print(f"Total features: {self.dim}")
+
         return features
 
     def process_raw_features(self, raw_obj):

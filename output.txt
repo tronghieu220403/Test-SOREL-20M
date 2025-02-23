@@ -1,0 +1,15 @@
+Đang xử lý: E:\Code\Github\Test-SOREL-20M\test\TAO_PortableServer.dll
+Trích xuất đặc trưng từ file: E:\Code\Github\Test-SOREL-20M\test\TAO_PortableServer.dll
+histogram: 256 features
+byteentropy: 256 features
+strings: 104 features
+general: 10 features
+header: 62 features
+section: 255 features
+imports: 1280 features
+exports: 128 features
+datadirectories: 30 features
+Total features: 2381
+Xác suất: 4.692045998570948e-05
+Kết quả model: An toàn
+

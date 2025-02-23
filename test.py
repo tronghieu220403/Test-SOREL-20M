@@ -21,7 +21,9 @@ def extract_features(binary_path):
     try:
         file_data = open(binary_path, "rb").read()
         extractor = ember.PEFeatureExtractor()
-        return np.array(extractor.feature_vector(file_data), dtype=np.float32).reshape(1, -1)
+        features_np_arr = np.array(extractor.feature_vector(file_data), dtype=np.float32).reshape(1, -1)
+        print(len(features_np_arr[0])) #2381
+        return features_np_arr
     except Exception as e:
         print(f"Lỗi khi trích xuất đặc trưng: {e}")
         return None
@@ -78,4 +80,4 @@ if __name__ == "__main__":
     sys.stdout = open("output.txt", "w", encoding="utf-8")
     
     #process_file("test_files\\acpiex.sys", model)
-    process_files_in_directory("E:\\Code\\Github\\Test-SOREL-20M\\test_files\\malware-samples-main\\", model)
+    process_files_in_directory("E:\\Code\\Github\\Test-SOREL-20M\\test\\", model)
